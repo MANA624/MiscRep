@@ -2,6 +2,7 @@ from tkinter import *
 from threading import Thread
 # This is a comment!
 
+
 class Gui:
     active_boxes = 6
     root = Tk()
@@ -18,7 +19,7 @@ class Gui:
         self.reset = Button(self.root, text="Change todo", command=self.redo)
         self.reset.grid(row=self.active_boxes + 2, column=0, padx=10, pady=10)
 
-        self.submit = Button(self.root, text="Press me!", command=Thread(target=self.submit_form).start)
+        self.submit = Button(self.root, text="Press me!", command=lambda: Thread(target=self.submit_form).start())
         self.submit.grid(row=self.active_boxes + 2, column=1, padx=10, pady=10)
 
         self.status = Label(self.root, text="")
@@ -35,7 +36,7 @@ class Gui:
         entry = Entry(self.root)
         entry.insert(END, '0')
         entry.grid(padx=10, pady=10, column=col, row=row)
-        entry.bind("<Return>", Thread(target=self.submit_form).start)
+        entry.bind("<Return>", lambda _: Thread(target=self.submit_form).start())
         return entry
 
     def create_check_boxes(self, row, col):
@@ -44,7 +45,7 @@ class Gui:
         check_box.grid(padx=10, pady=10, column=col, row=row)
         return var
 
-    def submit_form(self, *args):
+    def submit_form(self):
         sum = 0
         for entry in self.scores:
             sum += int(entry.get())
