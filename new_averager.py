@@ -1,6 +1,6 @@
 from tkinter import *
 from threading import Thread
-
+# This is a comment!
 
 class Gui:
     active_boxes = 6
