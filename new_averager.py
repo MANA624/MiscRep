@@ -13,7 +13,13 @@ class Gui:
     root = Tk()
     root.title("The World's Best Grade Averager Eva!!!")
 
+    class_info = ""
+
     def __init__(self):
+        Thread(target=self.read_classes).start()
+
+        self.root.bind("<Control-s>", self.save_scores)
+
         Label(self.root, text="Welcome to the Grade Averager").grid(row=0, columnspan=6, padx=10, pady=20)
 
         self.scores = [self.create_entries(row+2, 1) for row in range(self.active_boxes)]
@@ -38,34 +44,33 @@ class Gui:
         menu = Menu(self.root)
         self.root.config(menu=menu)
 
-        sub_menu = Menu(menu, tearoff=False)
-        menu.add_cascade(label='File', menu=sub_menu)
-        subsub_menu = Menu(sub_menu, tearoff=False)
-        sub_menu.add_cascade(label='Open Syllabus', menu=subsub_menu)
-        sub_save_menu = Menu(sub_menu, tearoff=False)
-        sub_menu.add_cascade(label='Save Syllabus', menu=sub_save_menu)
-        scores_load_menu = Menu(sub_menu, tearoff=False)
-        sub_menu.add_separator()
-        sub_menu.add_cascade(label='Load Scores', menu=scores_load_menu)
-        scores_save_menu = Menu(sub_menu, tearoff=False)
-        sub_menu.add_cascade(label='Save Scores', menu=scores_save_menu)
-        sub_menu.add_separator()
+        file_menu = Menu(menu, tearoff=False)
+        menu.add_cascade(label='File', menu=file_menu)
+        open_syl_menu = Menu(file_menu, tearoff=False)
+        file_menu.add_cascade(label='Open Syllabus', menu=open_syl_menu)
+        save_syl_menu = Menu(file_menu, tearoff=False)
+        file_menu.add_cascade(label='Save Syllabus', menu=save_syl_menu)
+        scores_load_menu = Menu(file_menu, tearoff=False)
+        file_menu.add_separator()
+        file_menu.add_cascade(label='Load Class \t Ctr+L', menu=scores_load_menu)
+        for item in self.class_info:
+            file_menu.add_command(label=item[0], command=lambda: self.load_class(item[0]))
 
-        sub_save_menu.add_command(label="Math er something", command=lambda: messagebox.showerror("salvado"))
+        file_menu.add_command(label='Save Scores  \t  Ctr+C', state="disabled")
+        file_menu.add_separator()
 
-        subsub_menu.add_command(label="Some command", command=lambda: messagebox.showerror("this command"))
+        open_syl_menu.add_command(label="Some command", command=lambda: messagebox.showerror("this command"))
 
         scores_load_menu.add_command(label="Dat class", command=lambda: messagebox.showerror("idk"))
 
-        scores_save_menu.add_command(label="Math or something", comman=lambda: messagebox.showerror("saved by the blood of christ."))
-
-        sub_menu.add_command(label='Quit', command=self.root.destroy)
+        file_menu.add_command(label='Quit', command=self.root.destroy)
 
         customize_menu = Menu(menu, tearoff=False)
         menu.add_cascade(label='Customize', menu=customize_menu)
         naming = Menu(customize_menu, tearoff=False)
-        customize_menu.add_cascade(label='Rename Classes', menu=naming)
-        naming.add_command(label='Rename Class 1', command=lambda: messagebox.showerror("rename that song"))
+        customize_menu.add_cascade(label='Rename Class', menu=naming)
+        for item in self.class_info:
+            naming.add_command(label=item[0], command=lambda: messagebox.showerror("rename that song"))
 
         help_menu = Menu(menu, tearoff=False)
         menu.add_cascade(label='Help', menu=help_menu)
@@ -73,6 +78,15 @@ class Gui:
         help_menu.add_command(label='About', command=lambda: messagebox.showerror("About that..."))
 
         self.root.mainloop()
+
+    def read_classes(self):
+        try:
+            reading = open("Classes.csv")
+            reader = csv.reader(reading)
+            self.class_info = list(reader)
+            reading.close()
+        except FileNotFoundError:
+            messagebox.showinfo("Congrats!", "Hello! And thank you for using the\nworld's best averager")
 
     def fill_text(self):
         for row in range(self.active_boxes):
@@ -92,8 +106,11 @@ class Gui:
         check_box.grid(padx=10, pady=10, column=col, row=row)
         return var
 
-    def create_cascades(self):
-        print("Yo")
+    def load_class(self, class_name):
+        for item in self.class_info:
+            if item[0] == class_name:
+                print("Class found!")
+
 
     def submit_form(self):
         sum = 0
@@ -118,6 +135,9 @@ class Gui:
             child.destroy()
 
         self.__init__()
+
+    def save_scores(self, *args):
+        print("Scores saved, yo!\n\n\n")
 
     def add_class(self):
 
