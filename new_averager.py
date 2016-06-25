@@ -1,6 +1,11 @@
 from tkinter import *
+from tkinter import messagebox
 from threading import Thread
+import csv
+import sys
 # This is a comment!
+
+line = []
 
 
 class Gui:
@@ -16,6 +21,8 @@ class Gui:
         self.extra_credit = [self.create_check_boxes(row+2, 3) for row in range(self.active_boxes)]
         self.drop_low = [self.create_check_boxes(row+2, 4) for row in range(self.active_boxes)]
 
+        self.fill_text()
+
         self.reset = Button(self.root, text="Change todo", command=self.redo)
         self.reset.grid(row=self.active_boxes + 2, column=0, padx=10, pady=10)
 
@@ -25,17 +32,57 @@ class Gui:
         self.status = Label(self.root, text="")
         self.status.grid(padx=10, pady=10, row=self.active_boxes + 3, columnspan=5)
 
+        self.test = Button(self.root, text="Test it", command=self.add_class)
+        self.test.grid()
+
+        menu = Menu(self.root)
+        self.root.config(menu=menu)
+
+        sub_menu = Menu(menu, tearoff=False)
+        menu.add_cascade(label='File', menu=sub_menu)
+        subsub_menu = Menu(sub_menu, tearoff=False)
+        sub_menu.add_cascade(label='Open Syllabus', menu=subsub_menu)
+        sub_save_menu = Menu(sub_menu, tearoff=False)
+        sub_menu.add_cascade(label='Save Syllabus', menu=sub_save_menu)
+        scores_load_menu = Menu(sub_menu, tearoff=False)
+        sub_menu.add_separator()
+        sub_menu.add_cascade(label='Load Scores', menu=scores_load_menu)
+        scores_save_menu = Menu(sub_menu, tearoff=False)
+        sub_menu.add_cascade(label='Save Scores', menu=scores_save_menu)
+        sub_menu.add_separator()
+
+        sub_save_menu.add_command(label="Math er something", command=lambda: messagebox.showerror("salvado"))
+
+        subsub_menu.add_command(label="Some command", command=lambda: messagebox.showerror("this command"))
+
+        scores_load_menu.add_command(label="Dat class", command=lambda: messagebox.showerror("idk"))
+
+        scores_save_menu.add_command(label="Math or something", comman=lambda: messagebox.showerror("saved by the blood of christ."))
+
+        sub_menu.add_command(label='Quit', command=self.root.destroy)
+
+        customize_menu = Menu(menu, tearoff=False)
+        menu.add_cascade(label='Customize', menu=customize_menu)
+        naming = Menu(customize_menu, tearoff=False)
+        customize_menu.add_cascade(label='Rename Classes', menu=naming)
+        naming.add_command(label='Rename Class 1', command=lambda: messagebox.showerror("rename that song"))
+
+        help_menu = Menu(menu, tearoff=False)
+        menu.add_cascade(label='Help', menu=help_menu)
+        help_menu.add_command(label='Help', command=lambda: messagebox.showerror("You need help"))
+        help_menu.add_command(label='About', command=lambda: messagebox.showerror("About that..."))
+
         self.root.mainloop()
 
-    def create_labels(self):
+    def fill_text(self):
         for row in range(self.active_boxes):
-            label = Label(self.root)
-            label.grid(row=row, column=0)
+            label = Label(self.root, text="Catergory: ")
+            label.grid(row=row+2, column=0, sticky=E)
 
     def create_entries(self, row, col):
         entry = Entry(self.root)
         entry.insert(END, '0')
-        entry.grid(padx=10, pady=10, column=col, row=row)
+        entry.grid(padx=4, pady=10, column=col, row=row)
         entry.bind("<Return>", lambda _: Thread(target=self.submit_form).start())
         return entry
 
@@ -44,6 +91,9 @@ class Gui:
         check_box = Checkbutton(self.root, variable=var)
         check_box.grid(padx=10, pady=10, column=col, row=row)
         return var
+
+    def create_cascades(self):
+        print("Yo")
 
     def submit_form(self):
         sum = 0
@@ -68,6 +118,37 @@ class Gui:
             child.destroy()
 
         self.__init__()
+
+    def add_class(self):
+
+        def submit_info(*args):
+            global line
+            title.config(text="What do you want to call your next category?")
+            if entry.get().title() == "None":
+                writing = open("Classes.csv", 'a', newline='')
+                writer = csv.writer(writing)
+                writer.writerow(line)
+                writing.close()
+                root.destroy()
+                self.status.config(text="Class created!")
+                return
+
+            line.extend((entry.get().title(), 0, 0, 0, 0))
+            entry.delete(0, END)
+
+        root = Tk()
+
+        title = Label(root, text="What is the name of your class to be called?")
+        title.pack(padx=10, pady=10)
+
+        entry = Entry(root)
+        entry.bind("<Return>", submit_info)
+        entry.pack(padx=10, pady=10)
+
+        button = Button(root, text="Submit", command=submit_info)
+        button.pack()
+
+        root.mainloop()
 
 
 def main():
