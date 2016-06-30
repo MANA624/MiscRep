@@ -5,14 +5,53 @@ from threading import Thread
 import shutil
 import csv
 import os
-
 # This is a comment!
+
+
+def installer():
+    if not sys.platform.startswith('win'):
+        return
+
+    import ctypes.wintypes
+    import winshell
+    from win32com.client import Dispatch
+
+    CSIDL_PERSONAL = 5  # My Documents
+    SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+    buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+    ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+
+    full_path = buf.value + r"\Averager"
+    if full_path == os.getcwd():
+        return
+    try:
+        shutil.copytree(os.getcwd(), full_path)
+    except FileExistsError:
+        pass
+
+    desktop = winshell.desktop()
+    path = os.path.join(desktop, "Averager.lnk")
+    target = full_path + r"\Averager.exe"
+    wDir = full_path
+    icon = full_path + r"\favicon.ico"
+
+    shell = Dispatch('WScript.Shell')
+    shortcut = shell.CreateShortCut(path)
+    shortcut.Targetpath = target
+    shortcut.WorkingDirectory = wDir
+    shortcut.IconLocation = icon
+    shortcut.save()
+    root = Tk()
+    root.withdraw()
+    messagebox.showinfo("Congrats!", "You're all set up! You'll\nfind a shortcut on your desktop")
+    sys.exit(0)
 
 
 class Gui:
     active_boxes = 6
     root = Tk()
     root.title("The World's Best Grade Averager Eva!!!")
+    root.iconbitmap('favicon.ico')
 
     class_info = ""
     save_state = "disabled"
@@ -103,6 +142,8 @@ class Gui:
             self.class_info = list(reader)
             reading.close()
         except FileNotFoundError:
+            reading = open("Classes.csv", 'w', newline='')
+            reading.close()
             messagebox.showinfo("Congrats!", "Hello! And thank you for using the\nworld's best averager")
 
     def fill_text(self):
@@ -180,7 +221,7 @@ class Gui:
 
         final_grade = sum(weighted_grades) / weight_sum
 
-        self.status.config(text="Your final grade is " + str(final_grade))
+        self.status.config(text="Your final grade is %.2f" % final_grade)
 
     def restart(self, wipe):
         if wipe:
@@ -262,7 +303,7 @@ class Gui:
                 writer = csv.writer(writing)
                 writer.writerow(self.line)
                 writing.close()
-                root.destroy()
+                self.close(root)
                 self.read_classes()
                 self.restart(False)
                 return
@@ -288,6 +329,7 @@ class Gui:
 
         root = Tk()
         root.title("Add a Class")
+        root.iconbitmap('favicon.ico')
 
         title = Label(root, text="What is the name of your class to be called?")
         title.pack(padx=10, pady=10)
@@ -340,11 +382,12 @@ class Gui:
             except FileNotFoundError:
                 pass
 
-            root.destroy()
+            self.close(root)
             self.restart(False)
 
         root = Tk()
         root.title("Rename a Class")
+        root.iconbitmap('favicon.ico')
 
         title = Label(root, text="What do you want your class to be renamed to?")
         title.pack(padx=10, pady=10)
@@ -422,6 +465,7 @@ class Gui:
         root.minsize(600, 200)
         root.maxsize(600, 200)
         root.title("Help")
+        root.iconbitmap('favicon.ico')
 
         var = StringVar(root)
         # initial value
@@ -468,6 +512,7 @@ class Gui:
 
         root = Tk()
         root.title('About this program')
+        root.iconbitmap('favicon.ico')
 
         label = Label(root, text="This is a privately developed Python GUI Application\n"
                                   "developed soley by Matthew Niemiec. Feel free to use\n"
@@ -482,6 +527,7 @@ class Gui:
 
 
 def main():
+    installer()
     Gui()
 
 
