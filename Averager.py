@@ -251,11 +251,8 @@ class Gui:
         def submit_info(*args):
             cat = entry.get().title()
             entry.delete(0, END)
-            if self.categories == 0:
-                title.config(text="What do you want to call your first catergory?")
-            elif self.categories == 1:
-                title.config(text="What do you want to call your next category?")
-                instructions.config(text='Type "Quit" when done')
+            title.config(text="What do you want to call your next category?")
+
             if cat == "Quit":
                 if self.categories <= 1:
                     title.config(text="Oops! You need at least one category!")
@@ -281,8 +278,12 @@ class Gui:
                 self.line.append(cat)
             else:
                 self.line.extend((cat, 0, 0, 0, 0))
-            self.categories += 1
 
+            if self.categories == 0:
+                title.config(text="What do you want to call your first catergory?")
+            elif self.categories == 1:
+                instructions.config(text='Type "Quit" when done')
+            self.categories += 1
             if self.categories >= 15:
                 entry.insert(END, "Quit")
                 submit_info(self.line)
@@ -324,6 +325,10 @@ class Gui:
             name = entry.get().title()
             if len(name) > 12:
                 name = name[:12] + "..."
+
+            if not name:
+                title.config(text="You can't name it nothing!")
+                return
 
             for item in self.class_info:
                 if item[0] == name:
