@@ -11,6 +11,7 @@ import shutil
 import platform
 from threading import Thread
 import sys
+import ctypes
 import winshell
 
 
@@ -281,16 +282,19 @@ def mail_sender(send_to, text):
 # a valid operating system, then checks and makes sure that the program itself is on the correct path (in Startup)
 # Of course, if it's not, then it will be moved
 def check_path():
-    global path
     if platform.platform().startswith("Windows"):
-        path = os.getenv('APPDATA') + "\Microsoft\Windows\Start Menu\Programs"
-    else:
-        Tk().withdraw()
-        messagebox.showerror("Oops!", "Sorry! You are not on a supported system!")
-        sys.exit(0)
+        shortcut_path = os.getenv('APPDATA') + "\Microsoft\Windows\Start Menu\Programs"
+        CSIDL_PERSONAL = 5  # My Documents
+        SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
 
-    if not os.path.exists(path + "\DiscRead"):
-        os.mkdir(path + "\DiscRead")
+        doc_path = buf.value + r"\DRead"
+    else:
+        raise OSError
+
+    if not os.path.exists(path + "\DRead"):
+        os.mkdir(path + "\DRead")
 
     try:
         os.remove(path + "Startup.DiscipleReading.exe")
