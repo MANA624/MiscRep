@@ -487,14 +487,8 @@ class Daily:
 # the location and prompts the user to set up the Info.txt and ends. Then if the program has not been run today yet
 # then it continues to ask the user if they've read their Bible yet and checks the date for mailing results.
 def main():
-    added = check_path()
-    if added == 0:
-        Tk().withdraw()
-        messagebox.showinfo("Thanks!", "You're all set up! Next time you turn on your computer you will be asked "
-                                       "if you'va read your Bible. Be sure to enter 'Setup' to mail your results!")
-    elif check_day():
-        Daily()
-        mail_results()
+    Daily()
+    mail_results()
     sys.exit(0)
 
 # A Pythonic formality
