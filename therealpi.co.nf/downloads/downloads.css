@@ -1,0 +1,7 @@
+#bodyDiv a{
+        text-decoration: none;
+        color: black;
+}
+
+#mainSection article:hover{
+        background-color: #FF
