@@ -1,3 +1,9 @@
+<?php
+
+session_start();
+
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html lang="en">
@@ -8,7 +14,7 @@
 </head>
 <body>
 	<div id="mainWrapper">
-		<?php include '../header.html';?>
+		<?php include '../header.php';?>
 		
 		<div id="bodyDiv">
 		
@@ -21,15 +27,18 @@
 					</header>
 					<p>So keep your prying eyes off</p>
 					<footer>
-						<p>written by Matthew Niemiec</p>
+						<p>wzritten by Matthew Niemiec</p>
 					</footer>
 				</article>
 			</section>
 			
-			<?php include '../login.php'; ?>
+			<?php isset($_SESSION['username']) ? include '../logout.php' : include '../login.php'; ?>
 		
 		</div>
 		
 		<footer id="footer">
 			@Copyright therealpi 2016
-	
+		</footer>
+	</div>
+</body>
+</html>

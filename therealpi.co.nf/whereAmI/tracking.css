@@ -9,6 +9,8 @@
 }
 
 #mainSection h1 {
-        color: lightblue;
+        font-size: 30px;
+        color: #22AACC;
         text-align: center;
-        m
+        margin: 20px
+}

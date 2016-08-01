@@ -3,5 +3,10 @@
         color: black;
 }
 
+#mainSection article {
+        transition: background-color 0.4s;
+}
+
 #mainSection article:hover{
-        background-color: #FF
+        background-color: #FFF788;
+}
