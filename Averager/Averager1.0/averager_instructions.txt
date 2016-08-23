@@ -1,0 +1,24 @@
+Steps to install a useful averaging program!
+
+1) Transfer averager.pyw to your user folder (i.e. C:\Users\name where name is whatever you call your computer, likely your first or last name)
+2) Go to https://www.python.org and scroll over "Downloads" and on the right under Python for Windows click Python 3.x.x. Make sure you're downloading Python 3, not Python 2!
+3) Save the file and run the executable
+4) STOP!!! Before clicking Install Now, make sure "Add Python 3.x to PATH" (At this time it says 3.5)
+5) When that box is checked click "Install Now"
+6) Finish the installation
+7) Search computer for "cmd" (open command window)
+8) Type in "pip install pyinstaller"
+9) Let it do its thing
+10) Type in (in the command window) "pyinstaller --onefile --noconsole averager.pyw
+11) When it has completed, go back to your user folder (C:\Users\name) 
+12) Open your folder called "dist"
+13) There should be a lone file called averager.exe. Copy this, favicon.ico, and bg_img.png to a folder of your choosing (The last two are still in the DropBox)
+14) Right click and press Send To -> Desktop
+15) Run it and enjoy!!
+
+Optional--
+
+16) Right click desktop icon and press Properties
+17) Click Browse
+18) Find favicon.ico and double-click it
+19) Press Okay and exit
